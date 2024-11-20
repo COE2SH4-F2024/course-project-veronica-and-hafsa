@@ -9,8 +9,7 @@ Player::Player(GameMechs* thisGMRef)
     pos = new Pos{10, 5};        
     symbol = '*';                
 
-    // Debug: Print initial position
-    std::cout << "Player initialized at position: (" 
+    std::cout << "Player initialized at position: (" //DEBUGGG
               << pos->x << ", " << pos->y << ")" 
               << std::endl;
     // more actions to be included
@@ -26,64 +25,65 @@ Player::~Player()
 objPos Player::getPlayerPos() const
 {
     objPos playerPosition;
-    playerPosition.setObjPos(pos->x, pos->y, symbol); // Set the player's current position and symbol
+    playerPosition.setObjPos(pos->x, pos->y, symbol); //Set the player's current position and symbol
     return playerPosition;
 }
 
 void Player::updatePlayerDir()
 {
     // PPA3 input processing logic    
-    char input = mainGameMechsRef->getInput(); // Get input from GameMechs
+    char input = mainGameMechsRef->getInput(); 
 
     switch (input) {
         case 'w': case 'W':
-            if (myDir != DOWN) myDir = UP;
+            myDir = UP; 
             break;
         case 's': case 'S':
-            if (myDir != UP) myDir = DOWN;
+            myDir = DOWN; 
             break;
         case 'a': case 'A':
-            if (myDir != RIGHT) myDir = LEFT;
+            myDir = LEFT; 
             break;
         case 'd': case 'D':
-            if (myDir != LEFT) myDir = RIGHT;
+            myDir = RIGHT; 
             break;
         default:
-            break; // Ignore invalid inputs
+            myDir = STOP; 
+            break;
     }
 
-    // Debug: Output the current direction
+    //DEBUGGG
     std::cout << "Direction updated: " << myDir << std::endl;
 }
 
 void Player::movePlayer() {
     // PPA3 Finite State Machine logic
-    int boardWidth = mainGameMechsRef->getBoardSizeX();   // Get board width
-    int boardHeight = mainGameMechsRef->getBoardSizeY();  // Get board height
+    int boardWidth = mainGameMechsRef->getBoardSizeX();  
+    int boardHeight = mainGameMechsRef->getBoardSizeY(); 
 
-    // Debug: Show current position before moving
-    std::cout << "Before move: (" << pos->x << ", " << pos->y << ")" << std::endl;
+    
+    std::cout << "Before move: (" << pos->x << ", " << pos->y << ")" << std::endl;//DEBUGG
 
-    // Update position based on direction
+    //updating position with wraparound logic
     switch (myDir) {
         case UP:
-            pos->y = (pos->y - 1 + boardHeight) % boardHeight; // Wrap around vertically
+            pos->y = (pos->y - 1 + boardHeight) % boardHeight;
             break;
         case DOWN:
-            pos->y = (pos->y + 1) % boardHeight;               // Wrap around vertically
+            pos->y = (pos->y + 1) % boardHeight;
             break;
         case LEFT:
-            pos->x = (pos->x - 1 + boardWidth) % boardWidth;   // Wrap around horizontally
+            pos->x = (pos->x - 1 + boardWidth) % boardWidth;
             break;
         case RIGHT:
-            pos->x = (pos->x + 1) % boardWidth;                // Wrap around horizontally
+            pos->x = (pos->x + 1) % boardWidth;
             break;
         default:
-            break; // No movement for STOP
+            break;
     }
 
-    // Debug: Show new position after moving
-    std::cout << "After move: (" << pos->x << ", " << pos->y << ")" << std::endl;
+    
+    std::cout << "After move: (" << pos->x << ", " << pos->y << ")" << std::endl;//DEBUGGG
 
 }
 

@@ -55,48 +55,48 @@ void Initialize(void)
 
 void GetInput(void)
 {
-    if (MacUILib_hasChar()) { // Check if there's input
-        char input = MacUILib_getChar(); // Capture the input
-        std::cout << "Captured input: " << input << std::endl; // Debug the input
-
+    if (MacUILib_hasChar()) { 
+        char input = MacUILib_getChar(); 
+        std::cout << "Captured input: " << input << std::endl; //DEBUGGG
         if (input == 27) { // ESC key (ASCII value 27)
-            std::cout << "Exit key pressed. Exiting game." << std::endl;
             exitFlag = true;
-        } else {
-            gameMechs->setInput(input); // Pass the input to GameMechs
-            player->updatePlayerDir();  // Update the player's direction
+            return;
         }
-    }
+
+        gameMechs->setInput(input); //pass the input to GameMechs
+        player->updatePlayerDir();  //update the player's direction
+        }
 }
+
 
 void RunLogic(void)
 {
-    player->movePlayer(); // move player based on the updated direction
+    player->movePlayer(); //move player based on the updated direction
 }
 
 void DrawScreen(void)
 {
-   // Step 1: Clear the screen
+   //clear the screen
     MacUILib_clearScreen();
 
-    // Step 2: Get the player's current position
+    //get the player's current position
     int x = player->getPlayerPos().pos->x;
     int y = player->getPlayerPos().pos->y;
 
-    // Debug: Print current position
+    //DEBUGGG: print current position
     std::cout << "Drawing player at position: (" << x << ", " << y << ")" << std::endl;
 
-    // Step 3: Move the cursor vertically (to the correct Y position)
+    //move the cursor vertically (to the correct Y position)
     for (int i = 0; i < y; ++i) {
-        std::cout << std::endl; // Add a newline for each row
+        std::cout << std::endl; 
     }
 
-    // Step 4: Move the cursor horizontally (to the correct X position)
+    //move the cursor horizontally (to the correct X position)
     for (int i = 0; i < x; ++i) {
-        std::cout << " "; // Add spaces to move horizontally
+        std::cout << " "; 
     }
 
-    // Step 5: Draw the player's symbol (*)
+    //draw the player's symbol (*)
     std::cout << "*" << std::endl;
 }
 
