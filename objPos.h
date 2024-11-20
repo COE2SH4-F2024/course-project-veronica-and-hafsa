@@ -16,7 +16,7 @@ class objPos
 
         objPos();
         objPos(int xPos, int yPos, char sym);
-        
+        ~objPos();
         // Respect the rule of six / minimum four
         // [TODO] Implement the missing special member functions to meet the minimum four rule
         
@@ -28,6 +28,7 @@ class objPos
         char getSymbolIfPosEqual(const objPos* refPos) const;
         
         bool isPosEqual(const objPos* refPos) const;
+        
 };
 
 #endif
