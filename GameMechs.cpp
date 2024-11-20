@@ -1,13 +1,16 @@
 #include "GameMechs.h"
+#include <iostream>
+#include "MacUILib.h"
+
 
 GameMechs::GameMechs()
 {
-    input = '\0';
-    exitFlag = false;
+    input = 0;
+    exitFlag = false; //ensure this is set to false
     loseFlag = false;
     score = 0;
-    boardSizeX = 0;
-    boardSizeY = 0;
+    boardSizeX = 30;  
+    boardSizeY = 15;
 }
 
 GameMechs::GameMechs(int boardX, int boardY)
@@ -33,7 +36,7 @@ bool GameMechs::getExitFlagStatus() const
 
 bool GameMechs::getLoseFlagStatus() const
 {
-
+    return loseFlag;
 }
     
 
@@ -44,12 +47,12 @@ char GameMechs::getInput() const
 
 int GameMechs::getScore() const
 {
-
+    return score;
 }
 
 void GameMechs::incrementScore()
 {
-    
+    score++;
 }
 
 int GameMechs::getBoardSizeX() const
@@ -65,6 +68,7 @@ int GameMechs::getBoardSizeY() const
 
 void GameMechs::setExitTrue()
 {
+    std::cout << "Exit flag set to true.\n";
     exitFlag = true;
 }
 
@@ -75,12 +79,12 @@ void GameMechs::setLoseFlag()
 
 void GameMechs::setInput(char this_input)
 {
-    this->input = input;
+    input = this_input;
 }
 
 void GameMechs::clearInput()
 {
-   
+   input = 0;
 }
 
 // More methods should be added here

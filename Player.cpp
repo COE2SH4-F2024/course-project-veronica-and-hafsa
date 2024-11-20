@@ -4,80 +4,76 @@
 
 Player::Player(GameMechs* thisGMRef)
 {
-    mainGameMechsRef = thisGMRef; 
-    myDir = STOP;                
-    pos = new Pos{10, 5};                       
-    symbol = '*';
-    std::cout << "Player initialized at position: (" 
-              << pos->x << ", " << pos->y << ")" 
-              << std::endl;
-    // more actions to be included
+    mainGameMechsRef = thisGMRef;
+    myDir = STOP;
+    playerPos.setObjPos(5, 5, '*');
 }
+
 
 
 Player::~Player()
 {
     // delete any heap members here
-    delete pos;
+    if (playerPos.pos) {
+        delete playerPos.pos; // Free allocated memory
+        playerPos.pos = nullptr;
+    }
 }
 
 objPos Player::getPlayerPos() const
 {
-    objPos playerPosition;
-    playerPosition.setObjPos(pos->x, pos->y, symbol); // Set the current position and symbol
-    return playerPosition;
+    return playerPos.getObjPos();
 }
 
 void Player::updatePlayerDir()
 {
     // PPA3 input processing logic    
     char input = mainGameMechsRef->getInput();
-
-    switch (input) {
-        case 'w': case 'W':
+    
+    switch(input) {
+        case 'w': 
             if (myDir != DOWN) myDir = UP;
             break;
-        case 's': case 'S':
+        case 's': 
             if (myDir != UP) myDir = DOWN;
             break;
-        case 'a': case 'A':
+        case 'a': 
             if (myDir != RIGHT) myDir = LEFT;
             break;
-        case 'd': case 'D':
+        case 'd': 
             if (myDir != LEFT) myDir = RIGHT;
             break;
-        default:
-            break; 
     }
-    std::cout << "Direction updated to: " << myDir << std::endl;
 }
 
 void Player::movePlayer() {
+
+    //geetting current position
+    int newX = playerPos.pos->x;
+    int newY = playerPos.pos->y;
     int boardWidth = mainGameMechsRef->getBoardSizeX();
     int boardHeight = mainGameMechsRef->getBoardSizeY();
-
-    //DEBUGG
-    std::cout << "Before move: (" << pos->x << ", " << pos->y << "), Direction: " << myDir << std::endl;
-
-    switch (myDir) {
+    
+    switch(myDir) {
         case UP:
-            pos->y = (pos->y - 1 + boardHeight) % boardHeight;
+            newY--;
+            if (newY <= 0) newY = boardHeight - 2;
             break;
         case DOWN:
-            pos->y = (pos->y + 1) % boardHeight;
+            newY++;
+            if (newY >= boardHeight - 1) newY = 1;
             break;
         case LEFT:
-            pos->x = (pos->x - 1 + boardWidth) % boardWidth;
+            newX--;
+            if (newX <= 0) newX = boardWidth - 2;
             break;
         case RIGHT:
-            pos->x = (pos->x + 1) % boardWidth;
+            newX++;
+            if (newX >= boardWidth - 1) newX = 1;
             break;
-        default:
-            break; 
     }
-
-    //DEBUGG
-    std::cout << "After move: (" << pos->x << ", " << pos->y << ")" << std::endl;
+    
+    playerPos.setObjPos(newX, newY, '*');
 
 }
 

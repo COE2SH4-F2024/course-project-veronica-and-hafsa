@@ -27,8 +27,7 @@ int main(void)
 {
 
     Initialize();
-
-    while(!exitFlag)  
+    while (!gameMechs->getExitFlagStatus())
     {
         GetInput();
         RunLogic();
@@ -37,7 +36,9 @@ int main(void)
     }
 
     CleanUp();
+    return 0;
 
+    
 }
 
 
@@ -56,71 +57,49 @@ void Initialize(void)
 
 void GetInput(void)
 {
-
-    gameMechs-> getInput();
+    if (MacUILib_hasChar()) {
+        char newInput = MacUILib_getChar();
+        gameMechs->setInput(newInput);
+    }
 }
 
 
-void RunLogic(void)
-{
-    if (MacUILib_hasChar()) { 
-        char input = MacUILib_getChar(); 
-        std::cout << "Captured input: " << input << std::endl; //DEBUGG
-        
-        if (input == 27) { // ESC key (ASCII value 27)
-            exitFlag = true;
-            return;
-        }
-
-        gameMechs->setInput(input);
-        player->updatePlayerDir(); 
-        std::cout << "Direction updated to: " << player->getPlayerPos().pos->x << ", " << player->getPlayerPos().pos->y << std::endl;
+void RunLogic(void){
+    char input = gameMechs->getInput();
+    
+    if (input == 27) { // ESC key
+        gameMechs->setExitTrue();
     }
-
-    if(gameMechs->getInput() == ' '){
-        gameMechs->setExitTrue(); 
-    }
-    else{
+    else {
         player->updatePlayerDir();
         player->movePlayer();
     }
-
     gameMechs->clearInput();
 }
 
-void DrawScreen(void)
-{
-    MacUILib_clearScreen(); 
+void DrawScreen(void){
 
-    
-    int totalRows = gameMechs->getBoardSizeY();
-    int totalCols = gameMechs->getBoardSizeX();
+    MacUILib_clearScreen();
 
-    //get the player's current position
     objPos playerHead = player->getPlayerPos();
-
-    //iterate over the game board to draw each cell
-    for (int row = 0; row < totalRows; ++row)
+    MacUILib_printf("Debug - Player at: x=%d, y=%d\n", playerHead.pos->x, playerHead.pos->y);
+    
+    //draw the board
+    for (int y = 0; y < gameMechs->getBoardSizeY(); y++)
     {
-        for (int col = 0; col < totalCols; ++col)
+        for (int x = 0; x < gameMechs->getBoardSizeX(); x++)
         {
-
-            if (row == 0 || row == totalRows - 1 || col == 0 || col == totalCols - 1)
-            {
+            bool isBorder = (y == 0 || y == gameMechs->getBoardSizeY() - 1 ||
+                           x == 0 || x == gameMechs->getBoardSizeX() - 1);
+            
+            if (isBorder)
                 MacUILib_printf("#");
-            }
-
-            else if (playerHead.pos->x == col && playerHead.pos->y == row)
-            {
-                MacUILib_printf("%c", playerHead.symbol);
-            }
-
+            else if (x == playerHead.pos->x && y == playerHead.pos->y)
+                MacUILib_printf("*");
             else
-            {
                 MacUILib_printf(" ");
-            }
         }
-        MacUILib_printf("\n"); 
+        MacUILib_printf("\n");
     }
 }
 
