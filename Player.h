@@ -27,6 +27,7 @@ class Player
         // More methods to be added here
 
     private:
+        //enum Dir {UP, DOWN, LEFT, RIGHT, STOP};
         objPos playerPos; // Upgrade this in iteration 3.       
         enum Dir myDir;
         GameMechs* mainGameMechsRef;

@@ -51,53 +51,77 @@ void Initialize(void)
     gameMechs = new GameMechs(30,15); // board game
     player = new Player(gameMechs); // pass gameMechs referece to the player
 
+
 }
 
 void GetInput(void)
 {
-    if (MacUILib_hasChar()) { 
-        char input = MacUILib_getChar(); 
-        std::cout << "Captured input: " << input << std::endl; //DEBUGGG
-        if (input == 27) { // ESC key (ASCII value 27)
-            exitFlag = true;
-            return;
-        }
 
-        gameMechs->setInput(input); //pass the input to GameMechs
-        player->updatePlayerDir();  //update the player's direction
-        }
+    gameMechs-> getInput();
 }
 
 
 void RunLogic(void)
 {
-    player->movePlayer(); //move player based on the updated direction
+    if (MacUILib_hasChar()) { 
+        char input = MacUILib_getChar(); 
+        std::cout << "Captured input: " << input << std::endl; //DEBUGG
+        
+        if (input == 27) { // ESC key (ASCII value 27)
+            exitFlag = true;
+            return;
+        }
+
+        gameMechs->setInput(input);
+        player->updatePlayerDir(); 
+        std::cout << "Direction updated to: " << player->getPlayerPos().pos->x << ", " << player->getPlayerPos().pos->y << std::endl;
+    }
+
+    if(gameMechs->getInput() == ' '){
+        gameMechs->setExitTrue(); 
+    }
+    else{
+        player->updatePlayerDir();
+        player->movePlayer();
+    }
+
+    gameMechs->clearInput();
 }
 
 void DrawScreen(void)
 {
-   //clear the screen
-    MacUILib_clearScreen();
+    MacUILib_clearScreen(); 
+
+    
+    int totalRows = gameMechs->getBoardSizeY();
+    int totalCols = gameMechs->getBoardSizeX();
 
     //get the player's current position
-    int x = player->getPlayerPos().pos->x;
-    int y = player->getPlayerPos().pos->y;
+    objPos playerHead = player->getPlayerPos();
 
-    //DEBUGGG: print current position
-    std::cout << "Drawing player at position: (" << x << ", " << y << ")" << std::endl;
+    //iterate over the game board to draw each cell
+    for (int row = 0; row < totalRows; ++row)
+    {
+        for (int col = 0; col < totalCols; ++col)
+        {
 
-    //move the cursor vertically (to the correct Y position)
-    for (int i = 0; i < y; ++i) {
-        std::cout << std::endl; 
+            if (row == 0 || row == totalRows - 1 || col == 0 || col == totalCols - 1)
+            {
+                MacUILib_printf("#");
+            }
+
+            else if (playerHead.pos->x == col && playerHead.pos->y == row)
+            {
+                MacUILib_printf("%c", playerHead.symbol);
+            }
+
+            else
+            {
+                MacUILib_printf(" ");
+            }
+        }
+        MacUILib_printf("\n"); 
     }
-
-    //move the cursor horizontally (to the correct X position)
-    for (int i = 0; i < x; ++i) {
-        std::cout << " "; 
-    }
-
-    //draw the player's symbol (*)
-    std::cout << "*" << std::endl;
 }
 
 void LoopDelay(void)
