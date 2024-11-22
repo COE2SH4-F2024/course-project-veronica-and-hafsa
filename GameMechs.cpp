@@ -26,7 +26,8 @@ GameMechs::GameMechs(int boardX, int boardY)
 // do you need a destructor?
 GameMechs::~GameMechs()
 {
-    
+    // no because you did not allocate anything t o the heap in the constructor
+
 }
 
 bool GameMechs::getExitFlagStatus() const
@@ -40,8 +41,12 @@ bool GameMechs::getLoseFlagStatus() const
 }
     
 
-char GameMechs::getInput() const
+char GameMechs::getInput() 
 {
+    if (MacUILib_hasChar()){
+        input=MacUILib_getChar();
+    }
+    
     return input;
 }
 
@@ -74,7 +79,8 @@ void GameMechs::setExitTrue()
 
 void GameMechs::setLoseFlag()
 {
-    
+    std::cout << "Lose flag set to true.\n";
+    loseFlag = true;
 }
 
 void GameMechs::setInput(char this_input)

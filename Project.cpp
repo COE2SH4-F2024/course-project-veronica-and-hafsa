@@ -9,7 +9,6 @@ using namespace std;
 
 #define DELAY_CONST 100000
 
-bool exitFlag;
 GameMechs* gameMechs = nullptr;
 Player* player = nullptr;
 
@@ -47,11 +46,8 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    exitFlag = false;
-
     gameMechs = new GameMechs(30,15); // board game
     player = new Player(gameMechs); // pass gameMechs referece to the player
-
 
 }
 
@@ -70,6 +66,11 @@ void RunLogic(void){
     if (input == 27) { // ESC key
         gameMechs->setExitTrue();
     }
+
+    if(input=='.'){
+        gameMechs->setLoseFlag();
+    } 
+
     else {
         player->updatePlayerDir();
         player->movePlayer();
@@ -83,6 +84,20 @@ void DrawScreen(void){
 
     objPos playerHead = player->getPlayerPos();
     MacUILib_printf("Debug - Player at: x=%d, y=%d\n", playerHead.pos->x, playerHead.pos->y);
+    MacUILib_printf("Debug - Score= %d\n", gameMechs->getScore());
+    MacUILib_printf("Debug- Press spacebar to increment score:");
+    MacUILib_printf("Debug - Score= %d\n", gameMechs->getScore());
+    if (gameMechs->getLoseFlagStatus()){
+        MacUILib_printf("You lost the game!\n");
+        cout << "Lose Flag Status:" << boolalpha << gameMechs->getLoseFlagStatus() << endl;
+
+    } else{
+         MacUILib_printf("You survived the game!\n");
+         cout << "Lose Flag Status:" << boolalpha << gameMechs->getLoseFlagStatus() << endl;
+    }
+    
+
+
     
     //draw the board
     for (int y = 0; y < gameMechs->getBoardSizeY(); y++)
