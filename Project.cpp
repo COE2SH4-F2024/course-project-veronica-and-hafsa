@@ -71,6 +71,10 @@ void RunLogic(void){
         gameMechs->setLoseFlag();
     } 
 
+    if(input==' '){
+        gameMechs->incrementScore();
+    } 
+
     else {
         player->updatePlayerDir();
         player->movePlayer();
@@ -85,8 +89,7 @@ void DrawScreen(void){
     objPos playerHead = player->getPlayerPos();
     MacUILib_printf("Debug - Player at: x=%d, y=%d\n", playerHead.pos->x, playerHead.pos->y);
     MacUILib_printf("Debug - Score= %d\n", gameMechs->getScore());
-    MacUILib_printf("Debug- Press spacebar to increment score:");
-    MacUILib_printf("Debug - Score= %d\n", gameMechs->getScore());
+    MacUILib_printf("Debug- Press spacebar to increment score:\n");
     if (gameMechs->getLoseFlagStatus()){
         MacUILib_printf("You lost the game!\n");
         cout << "Lose Flag Status:" << boolalpha << gameMechs->getLoseFlagStatus() << endl;
