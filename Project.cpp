@@ -4,6 +4,8 @@
 #include "GameMechs.h"
 #include "Player.h"
 #include "Food.h"
+#include "objPosArrayList.h"
+
 
 
 using namespace std;
@@ -54,10 +56,10 @@ void Initialize(void)
     food = new Food(gameMechs); //create food
 
     //initial food position
-    objPos playerPos = player->getPlayerPos();
+    objPos playerHeadPos = player->getPlayerPos()->getHeadElement();
 
     //generate food
-    food->generateFood(playerPos);
+    food->generateFood(playerHeadPos);
     
     //get and print new food position
     objPos foodPos = food->getFoodPos();
@@ -74,6 +76,8 @@ void GetInput(void)
 
 void RunLogic(void){
     char input = gameMechs->getInput();
+    std::cout << "Debug: Received Input: " << input << std::endl;
+
     
     //check for exit command
     if (input == 27) { // ESC key
@@ -89,13 +93,15 @@ void RunLogic(void){
         player->movePlayer();
 
         //checking for food collision
-        objPos playerPos = player->getPlayerPos();
+
         objPos foodPos = food->getFoodPos();
         
-        if(playerPos.pos->x == foodPos.pos->x && 
-           playerPos.pos->y == foodPos.pos->y)
+        objPos playerHeadPos = player->getPlayerPos()->getHeadElement();
+
+        if(playerHeadPos.pos->x == foodPos.pos->x && 
+           playerHeadPos.pos->y == foodPos.pos->y)
         {
-            food->generateFood(playerPos); //generate new food
+            food->generateFood(playerHeadPos); //generate new food
             gameMechs->incrementScore();  // optional---> increase score when food is eaten
         }
     }
@@ -108,13 +114,13 @@ void DrawScreen(void){
     MacUILib_clearScreen();
 
     //current positions
-    objPos playerHead = player->getPlayerPos();
+    objPosArrayList* playerPos = player->getPlayerPos();
+    int playerSize = playerPos-> getSize();
     objPos foodPos = food->getFoodPos();
-
+    
     //display debug information
-    MacUILib_printf("Debug - Player at: x=%d, y=%d\n", playerHead.pos->x, playerHead.pos->y);
+    //MacUILib_printf("Debug - Player at: x=%d, y=%d\n", playerHead.pos->x, playerHead.pos->y);
     MacUILib_printf("Debug - Score= %d\n", gameMechs->getScore());
-    MacUILib_printf("Debug- Press spacebar to increment score:\n");
     MacUILib_printf("Debug - Food at: x=%d, y=%d\n", foodPos.pos->x, foodPos.pos->y);
     
     //display game status
@@ -131,29 +137,46 @@ void DrawScreen(void){
     {
         for(int x = 0; x < gameMechs->getBoardSizeX(); x++)
         {
-            if(y == 0 || y == gameMechs->getBoardSizeY()-1 || 
-               x == 0 || x == gameMechs->getBoardSizeX()-1)
+            bool isPlayerSegment = false;
+
+
+
+            for(int k=0;k<playerSize;k++)
             {
-                MacUILib_printf("#"); //draw the board
+                objPos thisSeg = playerPos->getElement(k);
+                if (thisSeg.pos->x == x && thisSeg.pos->y == y) 
+                {
+                    MacUILib_printf("*");
+                    isPlayerSegment = true;
+                    break;
+                }
             }
-            else if(x == playerHead.pos->x && y == playerHead.pos->y)
+
+            if (!isPlayerSegment) 
             {
-                MacUILib_printf("*"); //draw the player
+                if (y == 0 || y == gameMechs->getBoardSizeY()-1 || 
+                x == 0 || x == gameMechs->getBoardSizeX()-1) 
+                {
+                    MacUILib_printf("#"); // Print walls
+                } 
+                else if(x == foodPos.pos->x && y == foodPos.pos->y)
+                {
+                    
+                    MacUILib_printf("o"); // Print food
+                }
+                     
+                else 
+                {
+                    MacUILib_printf(" "); // Empty space
+                }
+           
             }
-            else if(x == foodPos.pos->x && y == foodPos.pos->y)
-            {
-                MacUILib_printf("o"); //draw food
-            }
-            else
-            {
-                MacUILib_printf(" "); //empty spaces
-            }
+        
         }
         MacUILib_printf("\n");
     }
-    
     //clean up temporary objPos
-    delete foodPos.pos;
+    //delete foodPos.pos;
 
 }
 
