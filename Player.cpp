@@ -1,81 +1,107 @@
 #include "Player.h"
 #include<iostream>
+#include "objPosArrayList.h"
+
+
 
 
 Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
-    playerPos.pos->x =mainGameMechsRef ->getBoardSizeX()/2;
-    playerPos.pos->y =mainGameMechsRef ->getBoardSizeY()/2;
-    playerPos.symbol='@';
-    //playerPos.setObjPos(5, 5, '*');
-}
+    playerPosList = new objPosArrayList();
 
+
+    objPos headPos(mainGameMechsRef ->getBoardSizeX()/2,
+                   mainGameMechsRef ->getBoardSizeY()/2,
+                   '*' );
+
+
+    playerPosList->insertHead(headPos);
+
+
+}
 
 
 Player::~Player()
 {
     // delete any heap members here
-    if (playerPos.pos) {
-        delete playerPos.pos; // Free allocated memory
-        playerPos.pos = nullptr;
+    if (playerPosList) {
+        delete playerPosList; // Free allocated memory
+        playerPosList = nullptr;
     }
+   
 }
 
-objPos Player::getPlayerPos() const
+
+objPosArrayList* Player::getPlayerPos() const
 {
-    return playerPos.getObjPos();
+    return playerPosList; // returning the reference to the player objPos array List
+
+
 }
+
 
 void Player::updatePlayerDir()
 {
     // PPA3 input processing logic    
     char input = mainGameMechsRef->getInput();
-    
+   
     switch(input) {
-        case 'w': 
+        case 'w':
             if (myDir != DOWN) myDir = UP;
             break;
-        case 's': 
+        case 's':
             if (myDir != UP) myDir = DOWN;
             break;
-        case 'a': 
+        case 'a':
             if (myDir != RIGHT) myDir = LEFT;
             break;
-        case 'd': 
+        case 'd':
             if (myDir != LEFT) myDir = RIGHT;
             break;
     }
 }
 
+
 void Player::movePlayer() {
 
+
     //geetting current position
-    int newX = playerPos.pos->x;
-    int newY = playerPos.pos->y;
+    objPos newHeadPos = playerPosList->getHeadElement();
     int boardWidth = mainGameMechsRef->getBoardSizeX();
     int boardHeight = mainGameMechsRef->getBoardSizeY();
-    
+   
     switch(myDir) {
         case UP:
-            newY--;
-            if (newY <= 0) newY = boardHeight - 2;
+            newHeadPos.pos->y--;
+            if (newHeadPos.pos->y <= 0) newHeadPos.pos->y = boardHeight - 2;
             break;
         case DOWN:
-            newY++;
-            if (newY >= boardHeight - 1) newY = 1;
+            newHeadPos.pos->y++;
+            if (newHeadPos.pos->y >= boardHeight - 1) newHeadPos.pos->y = 1;
             break;
         case LEFT:
-            newX--;
-            if (newX <= 0) newX = boardWidth - 2;
+            newHeadPos.pos->x--;
+            if (newHeadPos.pos->x <= 0) newHeadPos.pos->x = boardWidth - 2;
             break;
         case RIGHT:
-            newX++;
-            if (newX >= boardWidth - 1) newX = 1;
+            newHeadPos.pos->x++;
+            if (newHeadPos.pos->x >= boardWidth - 1) newHeadPos.pos->x = 1;
             break;
     }
-    
-    playerPos.setObjPos(newX, newY, '*');
+
+
+
+
+    //newHeadPos.symbol = '*';
+
+
+    playerPosList->insertHead(newHeadPos);   //insert temporary obj pos to the head of the list
+   
+    playerPosList->removeTail();// later on for feature 2
+
+
+
 
 }
