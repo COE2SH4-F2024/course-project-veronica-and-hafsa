@@ -1,37 +1,31 @@
 #include "Player.h"
 #include<iostream>
-#include "objPosArrayList.h"
 
 
 Player::Player(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
-    playerPosList = new objPosArrayList();
-
-    objPos headPos(mainGameMechsRef ->getBoardSizeX()/2,
-                   mainGameMechsRef ->getBoardSizeY()/2,
-                   '*' );
-    
-
-    playerPosList->insertHead(headPos); 
-
+    playerPos.pos->x =mainGameMechsRef ->getBoardSizeX()/2;
+    playerPos.pos->y =mainGameMechsRef ->getBoardSizeY()/2;
+    playerPos.symbol='@';
+    //playerPos.setObjPos(5, 5, '*');
 }
+
+
 
 Player::~Player()
 {
     // delete any heap members here
-    if (playerPosList) {
-        delete playerPosList; // Free allocated memory
-        playerPosList = nullptr;
+    if (playerPos.pos) {
+        delete playerPos.pos; // Free allocated memory
+        playerPos.pos = nullptr;
     }
-    
 }
 
-objPosArrayList* Player::getPlayerPos() const
+objPos Player::getPlayerPos() const
 {
-    return playerPosList; // returning the reference to the player objPos array List
-
+    return playerPos.getObjPos();
 }
 
 void Player::updatePlayerDir()
@@ -58,35 +52,30 @@ void Player::updatePlayerDir()
 void Player::movePlayer() {
 
     //geetting current position
-    objPos newHeadPos = playerPosList->getHeadElement();
+    int newX = playerPos.pos->x;
+    int newY = playerPos.pos->y;
     int boardWidth = mainGameMechsRef->getBoardSizeX();
     int boardHeight = mainGameMechsRef->getBoardSizeY();
     
     switch(myDir) {
         case UP:
-            newHeadPos.pos->y--;
-            if (newHeadPos.pos->y <= 0) newHeadPos.pos->y = boardHeight - 2;
+            newY--;
+            if (newY <= 0) newY = boardHeight - 2;
             break;
         case DOWN:
-            newHeadPos.pos->y++;
-            if (newHeadPos.pos->y >= boardHeight - 1) newHeadPos.pos->y = 1;
+            newY++;
+            if (newY >= boardHeight - 1) newY = 1;
             break;
         case LEFT:
-            newHeadPos.pos->x--;
-            if (newHeadPos.pos->x <= 0) newHeadPos.pos->x = boardWidth - 2;
+            newX--;
+            if (newX <= 0) newX = boardWidth - 2;
             break;
         case RIGHT:
-            newHeadPos.pos->x++;
-            if (newHeadPos.pos->x >= boardWidth - 1) newHeadPos.pos->x = 1;
+            newX++;
+            if (newX >= boardWidth - 1) newX = 1;
             break;
     }
-
-
-    newHeadPos.symbol = '*';
-
-    playerPosList->insertHead(newHeadPos);   //insert temporary obj pos to the head of the list 
-    //playerPosList->removeTail();
-
+    
+    playerPos.setObjPos(newX, newY, '*');
 
 }
-

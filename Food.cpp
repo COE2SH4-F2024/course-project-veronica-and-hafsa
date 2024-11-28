@@ -5,8 +5,8 @@ Food::Food(GameMechs* thisGMRef) //constructor: initlaizes food object with game
 {
     mainGameMechsRef = thisGMRef; //stores reference to game mechs
     foodPos.pos = new Pos;//allocate memory for food position
-    foodPos.pos->x = 5;  //start with a fixed position
-    foodPos.pos->y = 5;  //different from player start
+    foodPos.pos->x = mainGameMechsRef->getBoardSizeX() / 2;;  //start with a fixed position
+    foodPos.pos->y = mainGameMechsRef->getBoardSizeY() / 2;;  //different from player start
     foodPos.symbol = 'o';
     
     //random number generator with current time
@@ -30,6 +30,7 @@ void Food::generateFood(objPos blockOff)
     int boardSizeY = mainGameMechsRef->getBoardSizeY();
     
     
+    /*
     //variables for new position 
     int newXvar, newYvar;
     
@@ -52,7 +53,19 @@ void Food::generateFood(objPos blockOff)
             break; 
         }
     } while (true); //try until valid position is found
-
+    */
+    int minX = 2;
+    int maxX = boardSizeX - 3;
+    int minY = 2;
+    int maxY = boardSizeY - 3;
+    
+    do {
+        // Generate position well within borders
+        foodPos.pos->x = minX + (rand() % (maxX - minX + 1));
+        foodPos.pos->y = minY + (rand() % (maxY - minY + 1));
+        
+    } while (foodPos.pos->x == blockOff.pos->x && 
+             foodPos.pos->y == blockOff.pos->y);
 }
 
 
