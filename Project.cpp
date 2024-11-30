@@ -143,6 +143,7 @@ void DrawScreen(void){
 
 
     //current positions
+    MacUILib_printf("in Draw()\n");
     objPos playerHead = player->getPlayerPos()->getHeadElement();
     objPos foodPos = food->getFoodPos();
 

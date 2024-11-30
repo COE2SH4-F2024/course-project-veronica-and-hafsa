@@ -1,8 +1,10 @@
 #include "objPosArrayList.h"
+#include "MacUILib.h"
+// Paste your Tested implementation here.
+// Paste your Tested implementation here.
+// Paste your Tested implementation here.
 
-// Paste your Tested implementation here.
-// Paste your Tested implementation here.
-// Paste your Tested implementation here.
+
 
 objPosArrayList::objPosArrayList()
 {
@@ -25,6 +27,8 @@ int objPosArrayList::getSize() const
 
 void objPosArrayList::insertHead(objPos thisPos)
 {
+    
+    
     if (listSize >= arrayCapacity) 
         return; //list is full
 
@@ -76,6 +80,9 @@ objPos objPosArrayList::getHeadElement() const
 {
     if (listSize <= 0)
         return objPos();
+
+    // MacUILib_printf("Data: %c, %d, %d\n", aList[0].symbol, aList[0].pos->x, aList[0].pos->y);
+    // MacUILib_Delay(999999);
     return aList[0];
 }
 
@@ -93,3 +100,4 @@ objPos objPosArrayList::getElement(int index) const
     
     return aList[index];
 }
+

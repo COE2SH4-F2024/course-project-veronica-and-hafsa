@@ -1,6 +1,7 @@
 #include "Player.h"
 #include<iostream>
 #include "objPosArrayList.h"
+#include "MacUILib.h"
 
 
 
@@ -69,6 +70,8 @@ void Player::movePlayer() {
 
     //geetting current position
     objPos newHeadPos = playerPosList->getHeadElement();
+    
+
     int boardWidth = mainGameMechsRef->getBoardSizeX();
     int boardHeight = mainGameMechsRef->getBoardSizeY();
    
@@ -101,6 +104,8 @@ void Player::movePlayer() {
    
     playerPosList->removeTail();// later on for feature 2
 
+    // MacUILib_printf("%c, %d, %d\nListSize: %d\n", newHeadPos.getSymbol(), newHeadPos.pos->x, newHeadPos.pos->y, playerPosList->getSize());
+    // MacUILib_Delay(999999); // 1s
 
 
 

@@ -1,10 +1,13 @@
 #include "objPos.h"
+#include "GameMechs.h"
+#include "Player.h"
 
 objPos::objPos()
 {
+
     pos = new Pos;
-    pos->x = 0;
-    pos->y = 0;
+    pos->x = 30/2;
+    pos->y = 7;
     symbol = 0; //NULL
 }
 
