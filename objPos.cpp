@@ -2,14 +2,16 @@
 #include "GameMechs.h"
 #include "Player.h"
 
+//default constructor
 objPos::objPos()
 {
 
-    pos = new Pos;
-    pos->x = 0;
-    pos->y = 0;
+    pos = new Pos; //allocate memory for position
+    pos->x = 0;    //initalize x-coord 
+    pos->y = 0;    //initalize y-coord
     symbol = 0; //NULL
 }
+
 
 objPos::objPos(int xPos, int yPos, char sym)
 {
@@ -19,15 +21,14 @@ objPos::objPos(int xPos, int yPos, char sym)
     symbol = sym;
 }
 
-// Respect the rule of six / minimum four
-// [TODO] Implement the missing special member functions to meet the minimum four rule
 
+//deconstructor
 objPos::~objPos()
 {
     delete pos; // Clean up memory
 }
 
-
+//set the position and symbol using individual parameters
 void objPos::setObjPos(objPos o)
 {
     pos->x = o.pos->x;
@@ -35,6 +36,7 @@ void objPos::setObjPos(objPos o)
     symbol = o.symbol;
 }
 
+//set the position and symbol using individual parameters
 void objPos::setObjPos(int xPos, int yPos, char sym)
 {
     pos->x = xPos;
@@ -42,6 +44,7 @@ void objPos::setObjPos(int xPos, int yPos, char sym)
     symbol = sym;
 }
 
+//get a copy of the objPos object
 objPos objPos::getObjPos() const
 {
     objPos returnPos;
@@ -51,46 +54,49 @@ objPos objPos::getObjPos() const
     
     return returnPos;
 }
-
+//get symbol of the objPos
 char objPos::getSymbol() const
 {
     return symbol;
 }
 
+//check if this position is equal to another position
 bool objPos::isPosEqual(const objPos* refPos) const
 {
-    return (refPos->pos->x == pos->x && refPos->pos->y == pos->y);
+    return (refPos->pos->x == pos->x && refPos->pos->y == pos->y); //compare x and y coordinates
 }
 
+//get the symbol if this position is equal to another positon
 char objPos::getSymbolIfPosEqual(const objPos* refPos) const
 {
-    if(isPosEqual(refPos))
-        return symbol;
+    if(isPosEqual(refPos)) //check if positions are equal
+        return symbol;     //return the symbol if =
     else
-        return 0;
+        return 0; //NULL
 }
 
 //copy constructor
 objPos::objPos(const objPos& other)
 {
-    pos = new Pos; 
-    pos->x = other.pos->x; 
-    pos->y = other.pos->y; 
-    symbol = other.symbol; 
+    pos = new Pos;             //allocate new memory for position
+    pos->x = other.pos->x;     //copy x coord
+    pos->y = other.pos->y;     //copy y coord
+    symbol = other.symbol;     //copy symbol
 }
 
+//assignment operator
 objPos& objPos::operator=(const objPos& other)
 {
     if (this == &other) 
         return *this;
 
-    delete pos;
+    delete pos; //delete existing memory
 
     pos = new Pos;
     pos->x = other.pos->x;
     pos->y = other.pos->y;
     symbol = other.symbol;
 
-    return *this; 
+    return *this;  //return current object
 }
 

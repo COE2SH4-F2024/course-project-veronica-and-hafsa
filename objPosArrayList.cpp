@@ -5,26 +5,29 @@
 // Paste your Tested implementation here.
 
 
-
+//constructor
 objPosArrayList::objPosArrayList()
 {
     aList = new objPos [ARRAY_MAX_CAP]; //allocate array
     listSize = 0;
-    arrayCapacity = ARRAY_MAX_CAP;
+    arrayCapacity = ARRAY_MAX_CAP; 
 
 }
 
+//deconstructor
 objPosArrayList::~objPosArrayList()
 {
     delete [] aList; //freeing array list
 
 }
 
+//get the current size of list
 int objPosArrayList::getSize() const
 {
     return listSize; 
 }
 
+//inster a new element at the head of the list
 void objPosArrayList::insertHead(objPos thisPos)
 {
     
@@ -53,6 +56,7 @@ void objPosArrayList::insertTail(objPos thisPos)
     
 }
 
+//remove the element ta the head of the list
 void objPosArrayList::removeHead()
 {
     if (listSize <= 0)
@@ -67,6 +71,7 @@ void objPosArrayList::removeHead()
 
 }
 
+//remove the element at the tail (end) of the list
 void objPosArrayList::removeTail()
 {
     if (listSize <= 0) // empty list
@@ -76,26 +81,29 @@ void objPosArrayList::removeTail()
 
 }
 
+//get the element at the head of the list
 objPos objPosArrayList::getHeadElement() const
 {
-    if (listSize <= 0)
-        return objPos();
+    if (listSize <= 0) //check if list is empty
+        return objPos(); //return default objPos
 
-    return aList[0];
+    return aList[0]; //return first element
 }
 
+//get the element at the tail -->last index
 objPos objPosArrayList::getTailElement() const
 {
-    if (listSize <= 0)
-        return objPos();
-    return aList[listSize - 1];
+    if (listSize <= 0) //check if the list is empty
+        return objPos(); //return default objPos 
+    return aList[listSize - 1]; //return the last element
 }
 
+//get the element at a specific index in the list
 objPos objPosArrayList::getElement(int index) const
 {
-    if (index < 0 || index >= arrayCapacity)
-        return objPos();
+    if (index < 0 || index >= arrayCapacity) //check for index out of bounds
+        return objPos(); 
     
-    return aList[index];
+    return aList[index]; //reutrn element at the specified index
 }
 

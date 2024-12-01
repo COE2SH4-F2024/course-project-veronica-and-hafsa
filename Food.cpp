@@ -1,7 +1,9 @@
 #include "Food.h"
 #include "MacUILib.h"
 
-Food::Food(GameMechs* thisGMRef) //constructor: initlaizes food object with game mechanics
+
+//constructor: initlaizes food object with game mechanics
+Food::Food(GameMechs* thisGMRef) 
 {
     mainGameMechsRef = thisGMRef; //stores reference to game mechs
     foodPos.pos = new Pos;//allocate memory for food position
@@ -12,8 +14,8 @@ Food::Food(GameMechs* thisGMRef) //constructor: initlaizes food object with game
     //random number generator with current time
     srand(static_cast<unsigned int>(time(nullptr)));
 }
-
-Food::~Food() //deconstructor: cleans up allocated memory
+//deconstructor: cleans up allocated memory
+Food::~Food() 
 {
     //checking if pointer exists before deleting
     if (foodPos.pos) {
