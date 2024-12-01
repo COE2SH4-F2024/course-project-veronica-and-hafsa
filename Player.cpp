@@ -115,15 +115,11 @@ void Player::movePlayer() {
             break;
     }
 
-    // Insert head when moving, only if food was not eaten
     playerPosList->insertHead(newHeadPos);
 
-    // If food is eaten, do not remove the tail (player grows)
     if (!consumed) {
-        playerPosList->removeTail(); // Remove tail unless food was eaten
-    } else {
-        // Handle food eaten logic (e.g., generate new food, update score)
-    }
+        playerPosList->removeTail(); 
+    } 
 }
 
 bool Player::checkSelfCollision(){
