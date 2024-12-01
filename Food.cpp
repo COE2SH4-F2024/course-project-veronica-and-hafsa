@@ -6,7 +6,7 @@ Food::Food(GameMechs* thisGMRef) //constructor: initlaizes food object with game
     mainGameMechsRef = thisGMRef; //stores reference to game mechs
     foodPos.pos = new Pos;//allocate memory for food position
     foodPos.pos->x = mainGameMechsRef->getBoardSizeX() / 2;;  //start with a fixed position
-    foodPos.pos->y = mainGameMechsRef->getBoardSizeY() / 2;;  //different from player start
+    foodPos.pos->y = mainGameMechsRef->getBoardSizeY() / 3;;  //different from player start
     foodPos.symbol = 'o';
     
     //random number generator with current time
@@ -23,49 +23,36 @@ Food::~Food() //deconstructor: cleans up allocated memory
 }
 
 //generate new random position for food
-void Food::generateFood(objPos blockOff)
+void Food::generateFood(objPosArrayList* blockOff)
 {
     //get board dimensions
     int boardSizeX = mainGameMechsRef->getBoardSizeX();
     int boardSizeY = mainGameMechsRef->getBoardSizeY();
-    
-    
-    /*
-    //variables for new position 
-    int newXvar, newYvar;
-    
-    do {
-        //generate new position between 1 and boardsize-1
-        //make sure food isnt on the boarder
-        newXvar = (rand() % (boardSizeX - 2)) + 1;
-        newYvar = (rand() % (boardSizeY - 2)) + 1;
-        
-        //calculate distance from player
-        //must be more than 2 spaces away i either x or y direction
-        int distX = abs(newXvar - blockOff.pos->x);
-        int distY = abs(newYvar - blockOff.pos->y);
-        
-        //if position is far enough from player, use it
-        if (distX > 2 || distY > 2) {
-            //setting new food position
-            foodPos.pos->x = newXvar;
-            foodPos.pos->y = newYvar;
-            break; 
-        }
-    } while (true); //try until valid position is found
-    */
+
+   
     int minX = 2;
     int maxX = boardSizeX - 3;
     int minY = 2;
     int maxY = boardSizeY - 3;
     
+    bool collision;
+    
     do {
-        // Generate position well within borders
+        // Generate random position within borders
         foodPos.pos->x = minX + (rand() % (maxX - minX + 1));
         foodPos.pos->y = minY + (rand() % (maxY - minY + 1));
+
+        collision = false;
         
-    } while (foodPos.pos->x == blockOff.pos->x && 
-             foodPos.pos->y == blockOff.pos->y);
+        for (int i = 0; i < blockOff->getSize(); i++) {
+            if (foodPos.pos->x == blockOff->getElement(i).pos->x && 
+                foodPos.pos->y == blockOff->getElement(i).pos->y) {
+                collision = true;
+                break; 
+            }
+        }
+    } while (collision); 
+
 }
 
 

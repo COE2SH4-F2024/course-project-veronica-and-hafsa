@@ -81,8 +81,8 @@ objPos objPosArrayList::getHeadElement() const
     if (listSize <= 0)
         return objPos();
 
-    // MacUILib_printf("Data: %c, %d, %d\n", aList[0].symbol, aList[0].pos->x, aList[0].pos->y);
-    // MacUILib_Delay(999999);
+    //MacUILib_printf("Data: %c, %d, %d\n", aList[0].symbol, aList[0].pos->x, aList[0].pos->y);
+    //MacUILib_Delay(999999);
     return aList[0];
 }
 

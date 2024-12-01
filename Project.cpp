@@ -41,6 +41,7 @@ int main(void)
     Initialize();
     while (!gameMechs->getExitFlagStatus())
     {
+
         GetInput();
         RunLogic();
         DrawScreen();
@@ -65,8 +66,9 @@ void Initialize(void)
 
 
     gameMechs = new GameMechs(30,15); // board game
-    player = new Player(gameMechs); // pass gameMechs referece to the player
     food = new Food(gameMechs); //create food
+    player = new Player(gameMechs,food); // pass gameMechs referece to the player
+    
 
 
     //initial food position
@@ -74,7 +76,7 @@ void Initialize(void)
 
 
     //generate food
-    food->generateFood(playerPos);
+    //food->generateFood(playerPos);
    
     //get and print new food position
     //objPos foodPos = food->getFoodPos();
@@ -94,25 +96,10 @@ void RunLogic(void){
     char input = gameMechs->getInput();
    
     //check for exit command
-    if (input == 27) { // ESC key
+    if (input == 27 || player->checkSelfCollision()) { // ESC key
+        //MacUILib_printf("You lose the game!");
         gameMechs->setExitTrue();
     }
-    //check for lose command
-    else if(input=='.'){
-        gameMechs->setLoseFlag();
-    }
-
-
-    else if(input==','){
-        objPos playerPos = player->getPlayerPos()->getHeadElement();
-        //objPos foodPos = food->getFoodPos();
-
-
-        food->generateFood(playerPos);
-
-
-    }
-
 
     else {
         //update player position
@@ -133,7 +120,12 @@ void RunLogic(void){
     }
    
     gameMechs->clearInput(); //clear processed input
+
 }
+
+
+
+    
 
 
 void DrawScreen(void){
@@ -141,57 +133,65 @@ void DrawScreen(void){
 
     MacUILib_clearScreen();
 
-
-    //current positions
-    MacUILib_printf("in Draw()\n");
     objPos playerHead = player->getPlayerPos()->getHeadElement();
+    objPosArrayList* playerPos = player->getPlayerPos();
+    int playerSize = playerPos-> getSize();
+
     objPos foodPos = food->getFoodPos();
 
 
-    //display debug information
-    MacUILib_printf("Debug - Player at: x=%d, y=%d\n", playerHead.pos->x, playerHead.pos->y);
-    MacUILib_printf("Debug - Score= %d\n", gameMechs->getScore());
-    MacUILib_printf("Debug- Press , to generate random food on board:\n");
-    MacUILib_printf("Debug - Food at: x=%d, y=%d\n", foodPos.pos->x, foodPos.pos->y);
+    //display game information
+    MacUILib_printf("Score= %d\n", gameMechs->getScore());
    
     //display game status
-    if (gameMechs->getLoseFlagStatus()){
+    if (gameMechs->getExitFlagStatus()){
         MacUILib_printf("You lost the game!\n");
-        cout << "Lose Flag Status:" << boolalpha << gameMechs->getLoseFlagStatus() << endl;
+        MacUILib_Delay(999999); // 0.1s delay
+
     } else {
         MacUILib_printf("You survived the game!\n");
-        cout << "Lose Flag Status:" << boolalpha << gameMechs->getLoseFlagStatus() << endl;
     }
    
     //draw the board
-    for(int y = 0; y < gameMechs->getBoardSizeY(); y++)
+
+    for (int y = 0; y < gameMechs->getBoardSizeY(); y++)
     {
-        for(int x = 0; x < gameMechs->getBoardSizeX(); x++)
+        for (int x = 0; x < gameMechs->getBoardSizeX(); x++)
         {
-            if(y == 0 || y == gameMechs->getBoardSizeY()-1 ||
-               x == 0 || x == gameMechs->getBoardSizeX()-1)
+            bool playerelement = false;
+
+            for (int k = 0; k < playerPos->getSize(); k++)
             {
-                MacUILib_printf("#"); //draw the board
+                objPos thisSeg = playerPos->getElement(k);
+                if (thisSeg.pos->x == x && thisSeg.pos->y == y)
+                {
+                    playerelement = true;
+                    MacUILib_printf("%c", thisSeg.symbol); // Print the player's segment
+                    break; 
+                }
             }
-            else if(x == playerHead.pos->x && y == playerHead.pos->y)
+
+            // If not a player segment, check for walls, food, or empty space
+            if (!playerelement)
             {
-                MacUILib_printf("*"); //draw the player
-            }
-            else if(x == foodPos.pos->x && y == foodPos.pos->y)
-            {
-                MacUILib_printf("o"); //draw food
-            }
-            else
-            {
-                MacUILib_printf(" "); //empty spaces
+                if (y == 0 || y == gameMechs->getBoardSizeY() - 1 ||
+                    x == 0 || x == gameMechs->getBoardSizeX() - 1)
+                {
+                    MacUILib_printf("#"); 
+                }
+                else if (x == foodPos.pos->x && y == foodPos.pos->y)
+                {
+                    MacUILib_printf("o"); 
+                }
+                else
+                {
+                    MacUILib_printf(" "); 
+                }
             }
         }
         MacUILib_printf("\n");
+    
     }
-   
-    //clean up temporary objPos
-    delete foodPos.pos;
-
 
 }
 
@@ -200,8 +200,6 @@ void LoopDelay(void)
 {
     MacUILib_Delay(DELAY_CONST); // 0.1s delay
 }
-
-
 
 
 void CleanUp(void)

@@ -2,26 +2,25 @@
 #include<iostream>
 #include "objPosArrayList.h"
 #include "MacUILib.h"
+#include "Food.h"
 
 
 
+ // Second body segment
+   Player::Player(GameMechs *thisGMRef, Food* foodRef){
+    mainGameMechsRef=thisGMRef;  
+    food=foodRef;                 
+    myDir=STOP;                  
+    playerPosList=new objPosArrayList();  
 
-Player::Player(GameMechs* thisGMRef)
-{
-    mainGameMechsRef = thisGMRef;
-    myDir = STOP;
-    playerPosList = new objPosArrayList();
+    int startX = mainGameMechsRef->getBoardSizeX() / 2;
+    int startY = mainGameMechsRef->getBoardSizeY() / 2;
 
-
-    objPos headPos(mainGameMechsRef ->getBoardSizeX()/2,
-                   mainGameMechsRef ->getBoardSizeY()/2,
-                   '*' );
-
-
-    playerPosList->insertHead(headPos);
-
-
+    objPos headPos(startX, startY, '*');
+    playerPosList->insertTail(headPos);
+  
 }
+
 
 
 Player::~Player()
@@ -38,8 +37,6 @@ Player::~Player()
 objPosArrayList* Player::getPlayerPos() const
 {
     return playerPosList; // returning the reference to the player objPos array List
-
-
 }
 
 
@@ -64,49 +61,86 @@ void Player::updatePlayerDir()
     }
 }
 
-
 void Player::movePlayer() {
-
-
-    //geetting current position
     objPos newHeadPos = playerPosList->getHeadElement();
-    
-
     int boardWidth = mainGameMechsRef->getBoardSizeX();
     int boardHeight = mainGameMechsRef->getBoardSizeY();
    
+    bool consumed = false;
+
     switch(myDir) {
         case UP:
             newHeadPos.pos->y--;
+            if (newHeadPos.pos->y == food->getFoodPos().pos->y &&
+                newHeadPos.pos->x == food->getFoodPos().pos->x) {
+                consumed = true; 
+                food->generateFood(playerPosList);
+                mainGameMechsRef->incrementScore();
+                
+            }
             if (newHeadPos.pos->y <= 0) newHeadPos.pos->y = boardHeight - 2;
             break;
+
         case DOWN:
             newHeadPos.pos->y++;
+            if (newHeadPos.pos->y == food->getFoodPos().pos->y &&
+                newHeadPos.pos->x == food->getFoodPos().pos->x) {
+                consumed = true; 
+                food->generateFood(playerPosList);
+                mainGameMechsRef->incrementScore();
+            }
             if (newHeadPos.pos->y >= boardHeight - 1) newHeadPos.pos->y = 1;
             break;
+
         case LEFT:
             newHeadPos.pos->x--;
+            if (newHeadPos.pos->x == food->getFoodPos().pos->x &&
+                newHeadPos.pos->y == food->getFoodPos().pos->y) {
+                consumed = true; 
+                food->generateFood(playerPosList);
+                mainGameMechsRef->incrementScore();
+            }
             if (newHeadPos.pos->x <= 0) newHeadPos.pos->x = boardWidth - 2;
             break;
+
         case RIGHT:
             newHeadPos.pos->x++;
+            if (newHeadPos.pos->x == food->getFoodPos().pos->x &&
+                newHeadPos.pos->y == food->getFoodPos().pos->y) {
+                consumed = true; 
+                food->generateFood(playerPosList);
+                mainGameMechsRef->incrementScore();
+            }
             if (newHeadPos.pos->x >= boardWidth - 1) newHeadPos.pos->x = 1;
             break;
     }
 
+    // Insert head when moving, only if food was not eaten
+    playerPosList->insertHead(newHeadPos);
 
-
-
-    //newHeadPos.symbol = '*';
-
-
-    playerPosList->insertHead(newHeadPos);   //insert temporary obj pos to the head of the list
-   
-    playerPosList->removeTail();// later on for feature 2
-
-    // MacUILib_printf("%c, %d, %d\nListSize: %d\n", newHeadPos.getSymbol(), newHeadPos.pos->x, newHeadPos.pos->y, playerPosList->getSize());
-    // MacUILib_Delay(999999); // 1s
-
-
-
+    // If food is eaten, do not remove the tail (player grows)
+    if (!consumed) {
+        playerPosList->removeTail(); // Remove tail unless food was eaten
+    } else {
+        // Handle food eaten logic (e.g., generate new food, update score)
+    }
 }
+
+bool Player::checkSelfCollision(){
+
+    for(int i=1; i<playerPosList->getSize();i++)
+    {
+    
+        objPos currentPos = playerPosList->getElement(i); 
+        objPos headPos = playerPosList->getHeadElement();  
+
+        if (currentPos.isPosEqual(&headPos))
+        {
+            mainGameMechsRef->setLoseFlag();
+            return true;
+        }
+
+    }
+    return false;
+}
+

@@ -6,8 +6,8 @@ objPos::objPos()
 {
 
     pos = new Pos;
-    pos->x = 30/2;
-    pos->y = 7;
+    pos->x = 0;
+    pos->y = 0;
     symbol = 0; //NULL
 }
 
@@ -69,3 +69,28 @@ char objPos::getSymbolIfPosEqual(const objPos* refPos) const
     else
         return 0;
 }
+
+//copy constructor
+objPos::objPos(const objPos& other)
+{
+    pos = new Pos; 
+    pos->x = other.pos->x; 
+    pos->y = other.pos->y; 
+    symbol = other.symbol; 
+}
+
+objPos& objPos::operator=(const objPos& other)
+{
+    if (this == &other) 
+        return *this;
+
+    delete pos;
+
+    pos = new Pos;
+    pos->x = other.pos->x;
+    pos->y = other.pos->y;
+    symbol = other.symbol;
+
+    return *this; 
+}
+

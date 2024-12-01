@@ -17,8 +17,7 @@ class Food {
         ~Food(); //destructor: cleans up any dynamically allocated memory
         
         //generates new food position
-        void generateFood(objPos blockOff);
-        
+    void generateFood(objPosArrayList* blockOff);        
         //returns the current position of the food
         //const indicates this method won't modify class members
         objPos getFoodPos() const;

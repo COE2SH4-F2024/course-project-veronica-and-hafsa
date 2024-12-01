@@ -5,9 +5,13 @@
 
 objPosArrayList::objPosArrayList()
 {
-    aList = new objPos [ARRAY_MAX_CAP]; //allocate array
+     
     listSize = 0;
     arrayCapacity = ARRAY_MAX_CAP;
+    aList = new objPos [ARRAY_MAX_CAP]; //allocate array
+    for (int i = 0; i < listSize; i++) {
+        aList[i] = objPos(); 
+    }
 
 }
 
