@@ -89,9 +89,8 @@ void GetInput(void)
 void RunLogic(void){
     char input = gameMechs->getInput(); //retrieve the stored input
    
-    //check for exit command
-    if (input == 27 || player->checkSelfCollision()) { // ESC key (ASCII 27)
-        //MacUILib_printf("You lose the game!");
+    //if player presses exit key or collides with itself, shutdown the game: 
+    if (input == 27 || player->checkSelfCollision()) { 
         gameMechs->setExitTrue();
     }
 
@@ -130,7 +129,7 @@ void DrawScreen(void){
     //display game status
     if (gameMechs->getExitFlagStatus()){
         MacUILib_printf("You lost the game!\n");
-        MacUILib_Delay(999999); // 0.1s delay
+        MacUILib_Delay(DELAY_CONST); // 0.1s delay before game shuts down
 
     } else {
         MacUILib_printf("You survived the game!\n");
